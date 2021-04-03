@@ -5,6 +5,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
@@ -40,8 +41,8 @@ public class AlertRabbit {
         }
     }
 
-    private static Properties read() {
-        FileInputStream fis;
+    private static void read() {
+       /* FileInputStream fis;
         //создаем объект Properties
         Properties property = new Properties();
 
@@ -49,15 +50,21 @@ public class AlertRabbit {
             //загружаем в него данные из файла
             fis = new FileInputStream("src/main/resources/rabbit.properties");
             //загружаем свойства из файла, представленного объектом InputStream
-            property.load(fis);
-            //получаем значения свойств из объекта Properties
+            property.load(fis);*/
+        //создаем объект Properties
+        Properties property = new Properties();
+        //
+        ClassLoader loader = AlertRabbit.class.getClassLoader();
+        try (InputStream io = loader.getResourceAsStream("rabbit.properties")) {
+            //загружаем свойства из файла, представленного объектом InputStream
+              property.load(io);
+        //получаем значения свойств из объекта Properties
             String interval = property.getProperty("rabbit.interval");
             System.out.println("Interval: " + interval);
 
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует!");
         }
-        return property;
     }
 
     public static class Rabbit implements Job {
