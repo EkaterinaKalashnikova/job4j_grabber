@@ -45,7 +45,7 @@ public class AlertedRabbit {
         //
         Properties properties = new Properties();
         //
-        try (InputStream input = AlertedRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+        try (InputStream input = AlertedRabbit.class.getClassLoader().getResourceAsStream("rabbit1.properties")) {
             if (input == null) {
                 System.out.println("ОШИБКА: Файл свойств отсуствует!" + properties);
             }
@@ -55,7 +55,8 @@ public class AlertedRabbit {
             SimpleScheduleBuilder interval = simpleSchedule().withRepeatCount(1)
                     .withIntervalInSeconds(Integer.parseInt(properties.getProperty("rabbit.interval")));
 
-            System.out.println("Interval: " + interval);
+            //System.out.println("Interval: " + interval);
+            properties.forEach((key, value) -> System.out.println("Key : " + key + ", Value : " + value));
 
        /*  //создаем объект Properties
         Properties properties = new Properties();
