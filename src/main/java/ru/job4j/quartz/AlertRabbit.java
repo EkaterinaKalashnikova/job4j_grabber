@@ -2,77 +2,50 @@ package ru.job4j.quartz;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Properties;
-
+import java.util.ArrayList;
+import java.util.List;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
-
     public static void main(String[] args) {
         try {
-            // Время периода запуска в расписание
-            read();
-            // Конфигурирование
+            List<Long> store = new ArrayList<>();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
-            // Создание задачи
-            JobDetail job = newJob(Rabbit.class).withIdentity("emailJob").build();
-            // Создание расписания
+            JobDataMap data = new JobDataMap();
+            data.put("store", store);
+            JobDetail job = newJob(Rabbit.class)
+                    .usingJobData(data)
+                    .build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(10)
+                    .withIntervalInSeconds(5)
                     .repeatForever();
-            // Запуск задачи
             Trigger trigger = newTrigger()
                     .startNow()
                     .withSchedule(times)
                     .build();
-            //Загрузка задачи и триггера в планировщик
             scheduler.scheduleJob(job, trigger);
-        } catch (SchedulerException se) {
+            Thread.sleep(5000);
+            scheduler.shutdown();
+            System.out.println(store);
+        } catch (Exception se) {
             se.printStackTrace();
-            System.out.println("SchedulerException" + se.getMessage());
-        }
-    }
-
-    private static void read() {
-       /* FileInputStream fis;
-        //создаем объект Properties
-        Properties property = new Properties();
-
-        try {
-            //загружаем в него данные из файла
-            fis = new FileInputStream("src/main/resources/rabbit.properties");
-            //загружаем свойства из файла, представленного объектом InputStream
-            property.load(fis);*/
-        //создаем объект Properties
-        Properties property = new Properties();
-        //
-        ClassLoader loader = AlertRabbit.class.getClassLoader();
-        try (InputStream io = loader.getResourceAsStream("rabbit.properties")) {
-            //загружаем свойства из файла, представленного объектом InputStream
-              property.load(io);
-        //получаем значения свойств из объекта Properties
-            String interval = property.getProperty("rabbit.interval");
-            System.out.println("Interval: " + interval);
-
-        } catch (IOException e) {
-            System.err.println("ОШИБКА: Файл свойств отсуствует!");
         }
     }
 
     public static class Rabbit implements Job {
 
+        public Rabbit() {
+            System.out.println(hashCode());
+        }
+
         @Override
-        public void execute(JobExecutionContext context) {
-            Date downloadTime = new Date();
-            System.out.println("Rabbit runs here ..." + downloadTime);
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            System.out.println("Rabbit runs here ...");
+            List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");
+            store.add(System.currentTimeMillis());
         }
     }
 }
