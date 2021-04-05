@@ -25,7 +25,7 @@ public class AlertedRabbit {
             JobDetail job = newJob(Rabbit.class).withIdentity("emailJob").build();
             // Создание расписания
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(10)
+                    .withIntervalInSeconds(Integer.parseInt((String) properties.get("rabbit.interval")))
                     .repeatForever();
             // Запуск задачи
             Trigger trigger = newTrigger()
@@ -45,32 +45,20 @@ public class AlertedRabbit {
         //
         Properties properties = new Properties();
         //
-        try (InputStream input = AlertedRabbit.class.getClassLoader().getResourceAsStream("rabbit1.properties")) {
-            if (input == null) {
-                System.out.println("ОШИБКА: Файл свойств отсуствует!" + properties);
-            }
+        try (InputStream input = AlertedRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+            //загружаем свойства из файла, представленного объектом InputStream
             assert input != null;
             properties.load(input);
-            // String interval = properties.getProperty("rabbit.interval");
-            SimpleScheduleBuilder interval = simpleSchedule().withRepeatCount(1)
-                    .withIntervalInSeconds(Integer.parseInt(properties.getProperty("rabbit.interval")));
-
-            //System.out.println("Interval: " + interval);
-            properties.forEach((key, value) -> System.out.println("Key : " + key + ", Value : " + value));
-
-       /*  //создаем объект Properties
-        Properties properties = new Properties();
-        // реализуем свой собственный загрузчик классов
-        ClassLoader loader = AlertedRabbit.class.getClassLoader();
-        try (InputStream io = loader.getResourceAsStream("rabbit.properties")) {
-            //загружаем свойства из файла, представленного объектом InputStream
-            properties.load(io);
             //получаем значения свойств из объекта Properties
             String interval = properties.getProperty("rabbit.interval");
-            System.out.println("Interval: " + interval);*/
+            System.out.println("Interval: " + interval);
+
+            properties.forEach((key, value) -> System.out.println("Key : " + key + ", Value : " + value));
+            // получить все ключи
+            properties.keySet().forEach(System.out::println);
 
         } catch (IOException e) {
-           // System.err.println("ОШИБКА: Файл свойств отсуствует!");
+            System.err.println("ОШИБКА: Файл свойств отсуствует!");
         }
         return properties;
     }
