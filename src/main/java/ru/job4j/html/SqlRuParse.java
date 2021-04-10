@@ -9,17 +9,14 @@ public class SqlRuParse {
     public static void main(String[] args) throws Exception {
         Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
         Elements row = doc.select(".postslisttopic");
+        Elements elements = doc.select(".altCol");
+        int dateIndex = 1;
         for (Element td : row) {
             Element href = td.child(0);
             System.out.println(href.attr("href"));
             System.out.println(href.text());
-
-        }
-
-        Elements elements = doc.select(".altCol");
-        if (elements.hasAttr("class")) {
-            System.out.println(elements.attr("href"));
-            System.out.println(elements.text());
+            System.out.println(elements.get(dateIndex));
+            dateIndex += 2;
         }
     }
 }
