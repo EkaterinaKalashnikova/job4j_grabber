@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+
 public class SqlRuParse {
     public static void main(String[] args) throws Exception {
         for (int i = 1; i < 6; i++) {
@@ -21,6 +22,9 @@ public class SqlRuParse {
                 dateIndex += 2;
             }
         }
+        PostParser pp = new PostParser();
+        String created_data = pp.loadAdDetails();
+        System.out.println(created_data);
     }
 }
 
