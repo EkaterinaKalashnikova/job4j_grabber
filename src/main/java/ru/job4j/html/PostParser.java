@@ -14,7 +14,7 @@ public class PostParser {
         Elements column = document.select(".msgFooter");
         for (Element td : column) {
             Element date = td.child(0);
-            System.out.println(date.before("a"));
+            //System.out.println(date.before("a"));
             System.out.println(date.text());
         }
         return url;
