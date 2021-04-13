@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 
 public class SqlRuParse {
     public static void main(String[] args) throws Exception {
-        for (int i = 1; i < 6; i++) {
+      /*  for (int i = 1; i < 6; i++) {
             String url = "https://www.sql.ru/forum/job-offers" + "/" + i;
             Document doc = Jsoup.connect(url).get();
             Elements row = doc.select(".postslisttopic");
@@ -21,7 +21,7 @@ public class SqlRuParse {
                 System.out.println(elements.get(dateIndex).text());
                 dateIndex += 2;
             }
-        }
+        }*/
         PostParser pp = new PostParser();
         String created_data = pp.loadAdDetails();
         System.out.println(created_data);
