@@ -6,7 +6,7 @@ public class Post {
     private int id;
     private String link;
     private String text;
-    private String created_data;
+    private String createData;
     private int count;
 
     public int getCount() {
@@ -42,11 +42,11 @@ public class Post {
     }
 
     public String getCreated_data() {
-        return created_data;
+        return createData;
     }
 
-    public void setCreated_data(String created_data) {
-        this.created_data = created_data;
+    public void setCreateData(String createData) {
+        this.createData = createData;
     }
 
 
@@ -63,17 +63,17 @@ public class Post {
                 count == post.count &&
                 Objects.equals(link, post.link) &&
                 Objects.equals(text, post.text) &&
-                Objects.equals(created_data, post.created_data);
+                Objects.equals(createData, post.createData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, link, text, created_data, count);
+        return Objects.hash(id, link, text, createData, count);
     }
 
     @Override
     public String toString() {
-        return String.format("Post(%s, %s, %s, %d)", link, text, created_data, count);
+        return String.format("Post(%s, %s, %s, %d)", link, text, createData, count);
     }
 }
 
