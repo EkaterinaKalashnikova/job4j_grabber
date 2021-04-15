@@ -1,21 +1,14 @@
 package ru.job4j.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Post {
     private int id;
+    private String name;
     private String link;
     private String text;
-    private String createData;
-    private int count;
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
+    private LocalDateTime createData;
 
     public int getId() {
         return id;
@@ -23,6 +16,14 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLink() {
@@ -41,11 +42,11 @@ public class Post {
         this.text = text;
     }
 
-    public String getCreated_data() {
+    public LocalDateTime getCreateData() {
         return createData;
     }
 
-    public void setCreateData(String createData) {
+    public void setCreateData(LocalDateTime createData) {
         this.createData = createData;
     }
 
@@ -60,7 +61,7 @@ public class Post {
         }
         Post post = (Post) o;
         return id == post.id &&
-                count == post.count &&
+                Objects.equals(name, post.name) &&
                 Objects.equals(link, post.link) &&
                 Objects.equals(text, post.text) &&
                 Objects.equals(createData, post.createData);
@@ -68,12 +69,12 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, link, text, createData, count);
+        return Objects.hash(id, name, link, text, createData);
     }
 
     @Override
     public String toString() {
-        return String.format("Post(%s, %s, %s, %d)", link, text, createData, count);
+        return String.format("Post(%s, %s, %s, %s)", name, link, text, createData);
     }
 }
 
