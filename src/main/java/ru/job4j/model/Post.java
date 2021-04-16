@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Post {
     private int id;
-    private String name;
-    private String link;
-    private String text;
+    private String name; //Message header
+    private String link; //msgBody
+    private String text; //msgBody
     private LocalDateTime createData;
 
     public int getId() {
@@ -74,7 +74,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return String.format("Post(%s, %s, %s, %s)", name, link, text, createData);
+        return String.format("Post(%s,\n %s,\n \"|%-30s|\",\n %s)", name, link, text, createData);
     }
 }
 

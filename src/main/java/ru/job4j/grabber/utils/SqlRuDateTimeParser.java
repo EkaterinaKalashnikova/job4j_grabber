@@ -56,7 +56,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
 
     private int getMinute(String time) {
         String[] times = time.split(":");
-        return Integer.parseInt(times[1]);
+        return Integer.parseInt(times[1].trim());
     }
 }
 

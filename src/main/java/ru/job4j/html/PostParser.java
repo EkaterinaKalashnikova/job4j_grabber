@@ -10,10 +10,30 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 public class PostParser {
-    public String loadAdDetails() throws IOException {
-        String url = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";
+    public String[] loadAdDetails(String url) throws IOException {
+        //String url = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";
         Document document = Jsoup.connect(url).get();
-        /*Elements footer = document.select(".msgFooter");
+        Element element = document.getElementsByAttributeValue("class", "msgFooter").first();
+        String s = element.ownText().substring(0, element.ownText().indexOf("["));
+       // System.out.println(s);
+        String[] str = new String[3];
+        Elements element1 = document.select(".msgBody");
+        Element element2 = element1.get(0).child(0);
+       // System.out.println(element2);
+        String link = element2.attr("href");
+        Element element3 = element1.get(1);
+        String text = element3.text();
+        //System.out.println(text);
+        str[0] = link;
+        str[1] = s;
+        str[2] = text;
+        return str;
+    }
+}
+
+
+
+ /*Elements footer = document.select(".msgFooter");
         System.out.println(footer.first().childNodes().get(0));
 
          Elements footer = document.getElementsByAttributeValue("class", "msgFooter").first();
@@ -22,18 +42,6 @@ public class PostParser {
                 System.out.println(((TextNode)node).text());
             }
         }*/
-
-        Element link = document.getElementsByAttributeValue("class", "msgFooter").first();
-        String s = link.ownText().substring(0, 16);
-        System.out.println(link.ownText().substring(0, 16));
-
-      return url;
-    }
-}
-
-
-
-
 
  /* Elements column = document.select(".msgFooter");
         for (Element td : column) {
