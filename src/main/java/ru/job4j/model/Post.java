@@ -1,6 +1,6 @@
 package ru.job4j.model;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Post {
@@ -8,15 +8,15 @@ public class Post {
     private String name; //Message header
     private String link; //msgBody
     private String text; //msgBody
-    private Time createData;
+    private LocalDateTime createData;
 
 
-    public Post(int id, String name, String link, String text, Time createData) {
+    public Post(int id, String name, String link, String text) {
         this.id = id;
         this.name = name;
         this.link = link;
         this.text = text;
-        this.createData = createData;
+        //this.createData = createData;
     }
 
     public Post() {
@@ -55,12 +55,12 @@ public class Post {
         this.text = text;
     }
 
-    public Time getCreateData() {
+    public LocalDateTime getCreateData() {
         return createData;
     }
 
-    public void setCreateData(String createData) {
-        this.createData = Time.valueOf(createData);
+    public void setCreateData(LocalDateTime createData) {
+        this.createData = createData;
     }
 
 
@@ -83,7 +83,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return String.format("Post(%s,\n %s,\n \"|%-30s|\",\n %s)", name, link, text, createData);
+        return String.format("Post(%s,\n %s,\n \"|%-20s|\",\n %s)", name, link, text, createData);
     }
 }
 

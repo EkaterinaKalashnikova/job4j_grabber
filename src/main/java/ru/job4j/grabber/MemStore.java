@@ -32,7 +32,7 @@ public class MemStore implements Store, AutoCloseable {
             statement.setString(1, posts.getName());
             statement.setString(2, posts.getLink());
             statement.setString(3, posts.getText());
-            statement.setString(4, posts.getCreateData().toString().formatted());
+            //statement.setString(4, posts.getCreateData().toString().formatted());
             statement.execute();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -53,8 +53,8 @@ public class MemStore implements Store, AutoCloseable {
                     posts.add(new Post(resultSet.getInt("id"),
                             resultSet.getString("name"),
                             resultSet.getString("link"),
-                            resultSet.getString("text"),
-                            resultSet.getTime("createData")
+                            resultSet.getString("text")
+                            //resultSet.getTimestamp("createData")
                     ));
                 }
             }
@@ -75,7 +75,7 @@ public class MemStore implements Store, AutoCloseable {
                     post.setName("name");
                     post.setLink("link");
                     post.setText("text");
-                    post.setCreateData("createData");
+                    // post.setCreateData("createData");
                 }
             }
         } catch (Exception e) {
