@@ -1,6 +1,6 @@
 package ru.job4j.model;
 
-import java.time.LocalDateTime;
+import java.sql.Time;
 import java.util.Objects;
 
 public class Post {
@@ -8,7 +8,20 @@ public class Post {
     private String name; //Message header
     private String link; //msgBody
     private String text; //msgBody
-    private LocalDateTime createData;
+    private Time createData;
+
+
+    public Post(int id, String name, String link, String text, Time createData) {
+        this.id = id;
+        this.name = name;
+        this.link = link;
+        this.text = text;
+        this.createData = createData;
+    }
+
+    public Post() {
+
+    }
 
     public int getId() {
         return id;
@@ -42,12 +55,12 @@ public class Post {
         this.text = text;
     }
 
-    public LocalDateTime getCreateData() {
+    public Time getCreateData() {
         return createData;
     }
 
-    public void setCreateData(LocalDateTime createData) {
-        this.createData = createData;
+    public void setCreateData(String createData) {
+        this.createData = Time.valueOf(createData);
     }
 
 
@@ -56,15 +69,11 @@ public class Post {
         if (this == o) {
             return true;
         }
-        if (o == null|| getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Post post = (Post) o;
-        return id == post.id &&
-                Objects.equals(name, post.name) &&
-                Objects.equals(link, post.link) &&
-                Objects.equals(text, post.text) &&
-                Objects.equals(createData, post.createData);
+        return id == post.id && Objects.equals(name, post.name) && Objects.equals(link, post.link) && Objects.equals(text, post.text) && Objects.equals(createData, post.createData);
     }
 
     @Override

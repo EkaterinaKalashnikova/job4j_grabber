@@ -4,8 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.job4j.grabber.utils.Parse;
-import ru.job4j.grabber.utils.SqlRuDateTimeParser;
+import ru.job4j.utils.Parse;
+import ru.job4j.utils.SqlRuDateTimeParser;
 import ru.job4j.model.Post;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class SqlRuParse implements Parse {
             post.setName(name);
             listPost.add(post);
         }
-        return listPost;//список из названий , делает вызов detail,
+        return listPost; //список из названий , делает вызов detail
     }
 
     @Override

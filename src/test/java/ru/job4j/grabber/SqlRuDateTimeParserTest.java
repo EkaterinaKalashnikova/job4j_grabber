@@ -1,13 +1,11 @@
-package ru.job4j.grabber.utils;
+package ru.job4j.grabber;
 
 import org.junit.Test;
+import ru.job4j.utils.SqlRuDateTimeParser;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 
 public class SqlRuDateTimeParserTest {
 
