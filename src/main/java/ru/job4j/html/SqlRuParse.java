@@ -31,20 +31,21 @@ public class SqlRuParse implements Parse {
 
     @Override
     public List<Post> list(String link) throws IOException {
-        List<Post> listPost = new ArrayList<>();
+       List<Post> listPost = new ArrayList<>();
         Document doc = Jsoup.connect(url + link).get();
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-            // System.out.println(href.attr("href"));
-            // System.out.println(href.text());
-            String name = href.text();
+             System.out.println(href.attr("href"));
+             System.out.println(href.text());
+           // String name = href.text();
             String linkName = href.attr("href");
             Post post = detail(linkName);
-            post.setName(name);
+            //post.setName(name);
+            post.setLink(linkName);
             listPost.add(post);
         }
-        return listPost; //список из названий , делает вызов detail
+        return listPost; //список из вакансий , делает вызов detail
     }
 
     @Override
@@ -52,10 +53,11 @@ public class SqlRuParse implements Parse {
         Post post = new Post();
         PostParser pp = new PostParser();
         String[] data = pp.loadAdDetails(link);
-        post.setLink(data[0]);
+        post.setName(data[0]);
+        post.setLink(data[1]);
         post.setText(data[2]);
         SqlRuDateTimeParser stm = new SqlRuDateTimeParser();
-        LocalDateTime createDate = stm.parse(data[1]);
+        LocalDateTime createDate = stm.parse(data[3]);
         post.setCreateData(createDate);
         return post; //объект пост
     }

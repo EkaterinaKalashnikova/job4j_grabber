@@ -13,10 +13,13 @@ public class PostParser {
     public String[] loadAdDetails(String url) throws IOException {
         //String url = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";
         Document document = Jsoup.connect(url).get();
+        Element el = document.getElementsByAttributeValue("class", "messageHeader").get(0);
+        String name = el.ownText();
+        //System.out.println(name);
         Element element = document.getElementsByAttributeValue("class", "msgFooter").first();
         String s = element.ownText().substring(0, element.ownText().indexOf("["));
        // System.out.println(s);
-        String[] str = new String[3];
+        String[] str = new String[4];
         Elements element1 = document.select(".msgBody");
         Element element2 = element1.get(0).child(0);
        // System.out.println(element2);
@@ -24,9 +27,10 @@ public class PostParser {
         Element element3 = element1.get(1);
         String text = element3.text();
         //System.out.println(text);
-        str[0] = link;
-        str[1] = s;
+        str[0] = name;
+        str[1] = link;
         str[2] = text;
+        str[3] = s;
         return str;
     }
 }
