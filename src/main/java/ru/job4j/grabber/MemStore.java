@@ -1,9 +1,13 @@
 package ru.job4j.grabber;
 
 import ru.job4j.model.Post;
+import ru.job4j.utils.SqlRuDateTimeParser;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +37,8 @@ public class MemStore implements Store, AutoCloseable {
             statement.setString(1, posts.getName());
             statement.setString(2, posts.getLink());
             statement.setString(3, posts.getText());
-            //statement.setString(4, posts.getCreateData().format(DateTimeFormatter.ofPattern("dd-MMM-yy")));
+            //statement.setString(4, posts.getCreateData().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+            statement.setTimestamp(4, Timestamp.valueOf(posts.getCreateData()));
             statement.execute();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -51,12 +56,13 @@ public class MemStore implements Store, AutoCloseable {
         try (PreparedStatement statement = connection.prepareStatement("select * from posts")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    posts.add(new Post(resultSet.getInt("id"),
+                    Post  post = new Post(resultSet.getInt("id"),
                             resultSet.getString("name"),
                             resultSet.getString("link"),
-                            resultSet.getString("text")
-                           // resultSet.getTimestamp("createData")
-                    ));
+                            resultSet.getString("text"),
+                            resultSet.getTimestamp("createdata").toLocalDateTime()
+                    );
+                   posts.add(post);
                 }
             }
         } catch (Exception e) {
@@ -76,7 +82,7 @@ public class MemStore implements Store, AutoCloseable {
                     post.setName("name");
                     post.setLink("link");
                     post.setText("text");
-                    //post.setCreateData("createData");
+                    post.setCreateData(LocalDateTime.parse("createdata"));
                 }
             }
         } catch (Exception e) {

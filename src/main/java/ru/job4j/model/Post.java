@@ -11,12 +11,12 @@ public class Post {
     private LocalDateTime createData;
 
 
-    public Post(int id, String name, String link, String text) {
+    public Post(int id, String name, String link, String text, LocalDateTime createData) {
         this.id = id;
         this.name = name;
         this.link = link;
         this.text = text;
-        //this.createData = createData;
+        this.createData = createData;
     }
 
     public Post() {

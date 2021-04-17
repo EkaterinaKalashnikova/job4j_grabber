@@ -36,8 +36,7 @@ public class SqlRuParse implements Parse {
         Elements row = doc.select(".postslisttopic");
         for (Element td : row) {
             Element href = td.child(0);
-             System.out.println(href.attr("href"));
-             System.out.println(href.text());
+            // System.out.println(href.text());
            // String name = href.text();
             String linkName = href.attr("href");
             Post post = detail(linkName);
