@@ -6,7 +6,7 @@ id serial primary key,
 create table if not exists posts(
 id serial primary key,
 name varchar(300),
-link varchar(300),
+link varchar(300) unique,
 text text,
-createData varchar(255)
+createData timestamp
 );
