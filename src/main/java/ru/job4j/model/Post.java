@@ -23,6 +23,13 @@ public class Post {
 
     }
 
+    public Post(String vacancy, String link, String text, LocalDateTime date) {
+        this.name = vacancy;
+        this.link = link;
+        this.text = text;
+        this.createData = date;
+    }
+
     public int getId() {
         return id;
     }

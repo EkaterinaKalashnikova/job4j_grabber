@@ -3,43 +3,51 @@ package ru.job4j.grabber;
 import ru.job4j.model.Post;
 import ru.job4j.utils.SqlRuDateTimeParser;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-public class MemStore implements Store, AutoCloseable {
-    private Connection connection;
+public class PsqlStore implements Store, AutoCloseable {
+    private Connection cnn;
 
-    public MemStore() throws Exception {
-        initConnection();
+    public PsqlStore(Properties cfg) throws SQLException {
+        try (InputStream in = PsqlStore.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+            Class.forName(cfg.getProperty("jdbc.driver"));
+            cfg.load(in);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        cnn = DriverManager.getConnection(
+                cfg.getProperty("url"),
+                cfg.getProperty("username"),
+                cfg.getProperty("password"));
     }
 
-    public void initConnection() throws Exception {
-        Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost:5432/agregator";
-        String login = "postgres";
-        String password = "kindness";
-        connection = DriverManager.getConnection(url, login, password);
+    public PsqlStore(Connection cnn) {
+        this.cnn = cnn;
     }
 
+    private PsqlStore() {
+    }
 
     @Override
-    public void save(Post posts) {
+    public void save(Post post) {
         try (PreparedStatement statement =
-                     connection.prepareStatement(
+                     cnn.prepareStatement(
                              "insert into posts(name, link, text, createdata) values (?, ?, ?, ?)",
                              Statement.RETURN_GENERATED_KEYS
                      )) {
-            statement.setString(1, posts.getName());
-            statement.setString(2, posts.getLink());
-            statement.setString(3, posts.getText());
-            //statement.setString(4, posts.getCreateData().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
-            statement.setTimestamp(4, Timestamp.valueOf(posts.getCreateData()));
+            statement.setString(1, post.getName());
+            statement.setString(2, post.getLink());
+            statement.setString(3, post.getText());
+            statement.setTimestamp(4, Timestamp.valueOf(post.getCreateData()));
             statement.execute();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    posts.setId(generatedKeys.getInt(1));
+                    post.setId(generatedKeys.getInt(1));
                 }
             }
         } catch (Exception e) {
@@ -50,16 +58,16 @@ public class MemStore implements Store, AutoCloseable {
     @Override
     public List<Post> getAll() {
         List<Post> posts = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement("select * from posts")) {
+        try (PreparedStatement statement = cnn.prepareStatement("select * from posts")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Post  post = new Post(resultSet.getInt("id"),
+                    Post post = new Post(resultSet.getInt("id"),
                             resultSet.getString("name"),
                             resultSet.getString("link"),
                             resultSet.getString("text"),
                             resultSet.getTimestamp("createdata").toLocalDateTime()
                     );
-                   posts.add(post);
+                    posts.add(post);
                 }
             }
         } catch (Exception e) {
@@ -71,7 +79,7 @@ public class MemStore implements Store, AutoCloseable {
     @Override
     public Post findById(String id) {
         Post post = new Post();
-        try (PreparedStatement statement = connection.prepareStatement("select * from posts where  id = ?")) {
+        try (PreparedStatement statement = cnn.prepareStatement("select * from posts where  id = ?")) {
             statement.setInt(1, Integer.parseInt(id));
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
@@ -90,8 +98,22 @@ public class MemStore implements Store, AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (connection != null) {
-            connection.close();
+        if (cnn != null) {
+            cnn.close();
         }
+    }
+
+    public static void main(String[] args) {
+        PsqlStore psqlStore = new PsqlStore();
+        Post post1 = new Post("job1", "link1", "text1",
+                LocalDateTime.parse("12 мар 20, 15:30"));
+        Post post2 = new Post("job2", "link2", "text2",
+                LocalDateTime.parse("сегодня 21, 15:30"));
+        psqlStore.save(post1);
+        psqlStore.save(post2);
+        List<Post> all = psqlStore.getAll();
+        System.out.println(all);
+        Post byId = psqlStore.findById("1");
+        System.out.println(byId);
     }
 }

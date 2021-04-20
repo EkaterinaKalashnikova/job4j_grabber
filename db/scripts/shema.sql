@@ -10,3 +10,5 @@ link varchar(300) unique,
 text text,
 createData timestamp
 );
+
+insert into posts(name, link, text, createdata)
