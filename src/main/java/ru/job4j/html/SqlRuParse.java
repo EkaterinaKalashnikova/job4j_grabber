@@ -16,8 +16,12 @@ import java.util.List;
 public class SqlRuParse implements Parse {
     private String url;
 
-    public SqlRuParse(String url) {
+    private SqlRuParse(String url) {
         this.url = url;
+    }
+
+    public SqlRuParse() {
+
     }
 
     public static void main(String[] args) throws Exception {
