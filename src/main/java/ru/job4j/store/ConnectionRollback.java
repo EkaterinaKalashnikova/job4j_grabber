@@ -1,4 +1,4 @@
-package ru.job4j.grabber;
+package ru.job4j.store;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;

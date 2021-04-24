@@ -1,4 +1,4 @@
-package ru.job4j.grabber;
+package ru.job4j.store;
 
 import ru.job4j.model.Post;
 import ru.job4j.utils.SqlRuDateTimeParser;
@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
+    //private static final Logger LOG =  LoggerFactory.getLogger(PsqlStore.class.getName());
+
     private Connection cnn;
     private Properties cfg;
 
-    private PsqlStore(Properties cfg) throws SQLException {
+    PsqlStore(Properties cfg) throws SQLException {
         this.cfg = cfg;
         // this.cnn = ConnectionRollback.create(this.init());
         this.cnn = init();
@@ -24,6 +26,10 @@ public class PsqlStore implements Store, AutoCloseable {
     public PsqlStore(Connection cnn, Properties cfg) {
         this.cnn = cnn;
         this.cfg = cfg;
+    }
+
+    public PsqlStore(Connection cnn) {
+        this.cnn = cnn;
     }
 
     private Connection init() {
@@ -44,6 +50,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public void save(Post post) {
+        //LOG.info("info message");
         try (PreparedStatement statement =
                      cnn.prepareStatement(
                              "insert into posts(name, link, text, createdata) values (?, ?, ?, ?)",
@@ -66,6 +73,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public List<Post> getAll() {
+       // LOG.info("info message");
         List<Post> posts = new ArrayList<>();
         try (PreparedStatement statement = cnn.prepareStatement("select * from posts")) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -87,6 +95,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public Post findById(String id) {
+      //  LOG.info("info message");
         Post post = new Post();
         try (PreparedStatement statement = cnn.prepareStatement("select * from posts where  id = ?")) {
             statement.setInt(1, Integer.parseInt(id));
@@ -130,7 +139,7 @@ public class PsqlStore implements Store, AutoCloseable {
         psqlStore.save(post1);
         psqlStore.save(post2);
         psqlStore.getAll().forEach(System.out::println);
-        Post byId = psqlStore.findById("3");
+        Post byId = psqlStore.findById("0");
         System.out.println(byId);
     }
 }

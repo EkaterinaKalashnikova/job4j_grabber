@@ -1,7 +1,6 @@
-package ru.job4j.grabber;
+package ru.job4j.store;
 
 import ru.job4j.model.Post;
-import ru.job4j.utils.SqlRuDateTimeParser;
 
 import java.sql.*;
 import java.time.LocalDateTime;

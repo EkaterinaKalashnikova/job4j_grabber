@@ -1,9 +1,10 @@
 package ru.job4j.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
-public class Post {
+public class Post  {
     private int id;
     private String name; //Message header
     private String link; //msgBody
@@ -28,6 +29,9 @@ public class Post {
         this.link = link;
         this.text = text;
         this.createData = date;
+    }
+
+    public Post(int i) {
     }
 
     public int getId() {
