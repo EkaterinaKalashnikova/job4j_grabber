@@ -5,9 +5,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import ru.job4j.html.SqlRuParse;
 import ru.job4j.html.Parse;
 import ru.job4j.model.Post;
+import ru.job4j.store.PsqlStore;
 import ru.job4j.store.Store;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -20,8 +23,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
-    private Store store() {
-        return null;
+    private Store store() throws IOException {
+        return new PsqlStore();
     }
 
     private Scheduler scheduler() throws SchedulerException {
@@ -57,33 +60,37 @@ public class Grabber implements Grab {
 
     public static class GrabJob implements Job {
 
+        private Timestamp timestamp;
+
+        public GrabJob(Timestamp timestamp) {
+            this.timestamp = timestamp;
+        }
+
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             /* TODO impl logic */
-            //Получаем спиок всех вакансий
-            List<Post> all = store.getAll();
             //Создаем список для вставки обновлений
             List<Post> lp = new LinkedList<>();
-            //перебираем полученные
-            for (Post i : all) {
-                try {
-                    List<Post> urlPost = parse.list("link");
-                    //проверяем, что ссылки не пустые, если пустая, выходим
-                    if (urlPost.isEmpty()) {
-                        break;
-                    }
-                    //все полученные ссылки добавляем в спиок
-                    lp.addAll(urlPost);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            //получаем ссылки
+            try {
+                List<Post> urlPost = parse.list(" https://www.sql.ru/forum/job");
+                //все полученные ссылки добавляем в спиок
+                lp.addAll(urlPost);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             // сохраняем поочереди
-            lp.forEach(f -> f.setLink("link"));
-            store.save(new Post(0));
+            for (Post p : lp) {
+                p.setName("name");
+                p.setLink("link");
+                p.setText("text");
+                p.setCreateData(timestamp.toLocalDateTime());
+            }
+            store.getAll();
+            store.save(new Post());
         }
     }
 

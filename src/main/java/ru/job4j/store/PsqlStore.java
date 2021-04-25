@@ -17,7 +17,7 @@ public class PsqlStore implements Store, AutoCloseable {
     private Connection cnn;
     private Properties cfg;
 
-    PsqlStore(Properties cfg) throws SQLException {
+    private PsqlStore(Properties cfg) throws SQLException {
         this.cfg = cfg;
         // this.cnn = ConnectionRollback.create(this.init());
         this.cnn = init();
@@ -30,6 +30,10 @@ public class PsqlStore implements Store, AutoCloseable {
 
     public PsqlStore(Connection cnn) {
         this.cnn = cnn;
+    }
+
+    public PsqlStore() {
+
     }
 
     private Connection init() {
