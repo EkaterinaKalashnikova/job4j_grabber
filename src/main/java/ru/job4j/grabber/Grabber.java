@@ -9,6 +9,8 @@ import ru.job4j.store.PsqlStore;
 import ru.job4j.store.Store;
 
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -23,8 +25,9 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
-    private Store store() throws IOException {
-        return new PsqlStore();
+    private Store store() {
+        return new PsqlStore(cfg);
+       // return null;
     }
 
     private Scheduler scheduler() throws SchedulerException {
@@ -58,13 +61,35 @@ public class Grabber implements Grab {
         scheduler.scheduleJob(job, trigger);
     }
 
+    public void web(Store store) {
+        new Thread(() -> {
+            try (ServerSocket server = new ServerSocket(Integer.parseInt(cfg.getProperty("port")))) {
+                while (!server.isClosed()) {
+                    Socket socket = server.accept();
+                    try (OutputStream out = socket.getOutputStream()) {
+                        out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+                        List<Post> posts = store.getAll();
+                        for (Post post : posts) {
+                            out.write(post.toString().getBytes("windows-1251"));
+                            out.write(System.lineSeparator().getBytes());
+                            out.flush();
+                        }
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public static class GrabJob implements Job {
+       // private Timestamp timestamp;
 
-        private Timestamp timestamp;
-
-        public GrabJob(Timestamp timestamp) {
-            this.timestamp = timestamp;
-        }
+       // public GrabJob(Timestamp timestamp) {
+       //     this.timestamp = timestamp;
+       // }
 
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -73,32 +98,25 @@ public class Grabber implements Grab {
             Parse parse = (Parse) map.get("parse");
             /* TODO impl logic */
             //Создаем список для вставки обновлений
-            List<Post> lp = new LinkedList<>();
-            //получаем ссылки
             try {
-                List<Post> urlPost = parse.list(" https://www.sql.ru/forum/job");
+                List<Post> posts = parse.list("https://www.sql.ru/forum/job-offers");
                 //все полученные ссылки добавляем в спиок
-                lp.addAll(urlPost);
+                //и сохраняем поочереди
+                for (Post post : posts) {
+                    store.save(post);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // сохраняем поочереди
-            for (Post p : lp) {
-                p.setName("name");
-                p.setLink("link");
-                p.setText("text");
-                p.setCreateData(timestamp.toLocalDateTime());
-            }
-            store.getAll();
-            store.save(new Post());
         }
-    }
 
-    public static void main(String[] args) throws Exception {
-        Grabber grab = new Grabber();
-        grab.cfg();
-        Scheduler scheduler = grab.scheduler();
-        Store store = grab.store();
-        grab.init(new SqlRuParse(), store, scheduler);
+        public static void main(String[] args) throws Exception {
+            Grabber grab = new Grabber();
+            grab.cfg();
+            Scheduler scheduler = grab.scheduler();
+            Store store = grab.store();
+            grab.init(new SqlRuParse(), store, scheduler);
+            grab.web(store);
+        }
     }
 }

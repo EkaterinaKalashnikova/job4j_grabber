@@ -16,29 +16,28 @@ import java.util.List;
 
 public class SqlRuParse implements Parse {
    // private static final Logger LOG =  LoggerFactory.getLogger(SqlRuParse.class.getName());
-    private String url;
-
-    private SqlRuParse(String url) {
-        this.url = url;
-    }
+  //  private String url;
+// private SqlRuParse(String url) {
+      //  this.url = url;
+  //  }
 
     public SqlRuParse() {
 
     }
 
     public static void main(String[] args) throws Exception {
-            SqlRuParse sqlRuParse = new SqlRuParse("https://www.sql.ru/forum/job-offers");
+            SqlRuParse sqlRuParse = new SqlRuParse();
             for (int i = 1; i < 6; i++) {
-                List<Post> posts = sqlRuParse.list("/" + i);
-                // System.out.println(posts);
+                List<Post> posts = sqlRuParse.list("https://www.sql.ru/forum/job-offers/" + i);
+                 System.out.println(posts);
                 posts.forEach(System.out::println);
-            }
+           }
         }
 
         @Override
         public List<Post> list (String link) throws IOException {
             List<Post> listPost = new ArrayList<>();
-            Document doc = Jsoup.connect(url + link).get();
+            Document doc = Jsoup.connect(link).get();
             Elements row = doc.select(".postslisttopic");
             for (Element td : row) {
                 Element href = td.child(0);

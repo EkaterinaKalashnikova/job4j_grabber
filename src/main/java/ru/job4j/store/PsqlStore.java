@@ -1,5 +1,6 @@
 package ru.job4j.store;
 
+import ru.job4j.html.SqlRuParse;
 import ru.job4j.model.Post;
 import ru.job4j.utils.SqlRuDateTimeParser;
 
@@ -17,10 +18,14 @@ public class PsqlStore implements Store, AutoCloseable {
     private Connection cnn;
     private Properties cfg;
 
-    private PsqlStore(Properties cfg) throws SQLException {
+    /*private Store store() throws SQLException{
+        return new PsqlStore(cfg);
+    }*/
+
+   public PsqlStore(Properties cfg)  {
         this.cfg = cfg;
-        // this.cnn = ConnectionRollback.create(this.init());
-        this.cnn = init();
+        //this.cnn = ConnectionRollback.create(this.init());
+       this.cnn = init();
     }
 
     public PsqlStore(Connection cnn, Properties cfg) {
@@ -33,7 +38,6 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public PsqlStore() {
-
     }
 
     private Connection init() {
@@ -57,7 +61,7 @@ public class PsqlStore implements Store, AutoCloseable {
         //LOG.info("info message");
         try (PreparedStatement statement =
                      cnn.prepareStatement(
-                             "insert into posts(name, link, text, createdata) values (?, ?, ?, ?)",
+                             "insert into posts(name, link, text, createdata) values (?, ?, ?, ?) on conflict do nothing",
                              Statement.RETURN_GENERATED_KEYS
                      )) {
             statement.setString(1, post.getName());
@@ -127,7 +131,16 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public static void main(String[] args) throws SQLException, IOException {
-        Properties cfg = new Properties();
+       PsqlStore psqlStore = new PsqlStore(new Properties());
+       SqlRuParse sqlRuParse = new SqlRuParse();
+        for (var post :sqlRuParse.list("https://www.sql.ru/forum/job-offers")) {
+            psqlStore.save(post);
+        }
+        for (var post1 :psqlStore.getAll()) {
+            System.out.println(post1);
+        }
+
+        /* Properties cfg = new Properties();
         PsqlStore psqlStore = new PsqlStore(cfg);
         SqlRuDateTimeParser sdt = new SqlRuDateTimeParser();
         LocalDateTime now = LocalDateTime.now();
@@ -144,6 +157,6 @@ public class PsqlStore implements Store, AutoCloseable {
         psqlStore.save(post2);
         psqlStore.getAll().forEach(System.out::println);
         Post byId = psqlStore.findById("0");
-        System.out.println(byId);
+        System.out.println(byId);*/
     }
 }
