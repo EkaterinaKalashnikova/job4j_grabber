@@ -35,7 +35,7 @@ public class SqlRuParse implements Parse {
         }
 
         @Override
-        public List<Post> list (String link) throws IOException {
+        public List<Post> list(String link) throws IOException {
             List<Post> listPost = new ArrayList<>();
             Document doc = Jsoup.connect(link).get();
             Elements row = doc.select(".postslisttopic");
@@ -53,7 +53,7 @@ public class SqlRuParse implements Parse {
         }
 
         @Override
-        public Post detail (String link) throws IOException {
+        public Post detail(String link) throws IOException {
             Post post = new Post();
             PostParser pp = new PostParser();
             String[] data = pp.loadAdDetails(link);
