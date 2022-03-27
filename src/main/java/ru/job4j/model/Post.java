@@ -21,7 +21,6 @@ public class Post  {
     }
 
     public Post() {
-
     }
 
     public Post(String vacancy, String link, String text, LocalDateTime date) {
