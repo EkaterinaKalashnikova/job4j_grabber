@@ -16,23 +16,23 @@ public class AlertedRabbit {
 
     public static void main(String[] args) {
         try {
-            // Время периода запуска в расписание
+            /*Время периода запуска в расписание*/
             Properties properties = read();
-            // Конфигурирование
+            /* Конфигурирование*/
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
-            // Создание задачи
+            /*Создание задачи*/
             JobDetail job = newJob(Rabbit.class).withIdentity("emailJob").build();
-            // Создание расписания
+            /*Создание расписания*/
             SimpleScheduleBuilder times = simpleSchedule()
                     .withIntervalInSeconds(Integer.parseInt((String) properties.get("rabbit.interval")))
                     .repeatForever();
-            // Запуск задачи
+            /*Запуск задачи*/
             Trigger trigger = newTrigger()
                     .startNow()
                     .withSchedule(times)
                     .build();
-            //Загрузка задачи и триггера в планировщик
+            /*Загрузка задачи и триггера в планировщик*/
             scheduler.scheduleJob(job, trigger);
 
         } catch (SchedulerException se) {
@@ -42,19 +42,17 @@ public class AlertedRabbit {
     }
 
     private static Properties read() {
-        //
         Properties properties = new Properties();
-        //
         try (InputStream input = AlertedRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
-            //загружаем свойства из файла, представленного объектом InputStream
+            /*загружаем свойства из файла, представленного объектом InputStream*/
             assert input != null;
             properties.load(input);
-            //получаем значения свойств из объекта Properties
+            /*получаем значения свойств из объекта Properties*/
             String interval = properties.getProperty("rabbit.interval");
             System.out.println("Interval: " + interval);
 
             properties.forEach((key, value) -> System.out.println("Key : " + key + ", Value : " + value));
-            // получить все ключи
+            /* получить все ключи*/
             properties.keySet().forEach(System.out::println);
 
         } catch (IOException e) {

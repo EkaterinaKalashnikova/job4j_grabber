@@ -6,9 +6,9 @@ import java.util.Objects;
 
 public class Post  {
     private int id;
-    private String name; //Message header
-    private String link; //msgBody
-    private String text; //msgBody
+    private String name; /*Message header*/
+    private String link; /*msgBody*/
+    private String text; /*msgBody*/
     private LocalDateTime createData;
 
 
@@ -21,6 +21,7 @@ public class Post  {
     }
 
     public Post() {
+
     }
 
     public Post(String vacancy, String link, String text, LocalDateTime date) {
@@ -31,6 +32,7 @@ public class Post  {
     }
 
     public Post(int i) {
+
     }
 
     public int getId() {

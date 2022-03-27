@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
-    //private static final Logger LOG =  LoggerFactory.getLogger(PsqlStore.class.getName());
+    /*private static final Logger LOG =  LoggerFactory.getLogger(PsqlStore.class.getName());*/
 
     private Connection cnn;
     private Properties cfg;
@@ -24,7 +24,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
    public PsqlStore(Properties cfg)  {
         this.cfg = cfg;
-        //this.cnn = ConnectionRollback.create(this.init());
+        /*this.cnn = ConnectionRollback.create(this.init());*/
        this.cnn = init();
     }
 
@@ -58,7 +58,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public void save(Post post) {
-        //LOG.info("info message");
+        /*LOG.info("info message");*/
         try (PreparedStatement statement =
                      cnn.prepareStatement(
                              "insert into posts(name, link, text, createdata) values (?, ?, ?, ?) on conflict do nothing",
@@ -81,7 +81,7 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public List<Post> getAll() {
-       // LOG.info("info message");
+       /* LOG.info("info message");*/
         List<Post> posts = new ArrayList<>();
         try (PreparedStatement statement = cnn.prepareStatement("select * from posts")) {
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -103,13 +103,13 @@ public class PsqlStore implements Store, AutoCloseable {
 
     @Override
     public Post findById(String id) {
-      //  LOG.info("info message");
+      /* LOG.info("info message");*/
         Post post = new Post();
         try (PreparedStatement statement = cnn.prepareStatement("select * from posts where  id = ?")) {
             statement.setInt(1, Integer.parseInt(id));
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    // resultSet.getInt("id"); //название столбца
+                    /*resultSet.getInt("id"); название столбца*/
                     post.setId(resultSet.getInt("id"));
                     post.setName(resultSet.getString("name"));
                     post.setLink(resultSet.getString("link"));

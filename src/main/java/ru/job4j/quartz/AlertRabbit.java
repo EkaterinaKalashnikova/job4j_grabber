@@ -22,31 +22,31 @@ public class AlertRabbit {
 
     public static void main(String[] args) {
         try {
-            //Создаем соединение с базой данных
+            /*Создаем соединение с базой данных*/
             Connection cn = AlertRabbit.connection();
-            //Создаем конфигурацию
+            /*Создаем конфигурацию*/
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
-            //Передаем общий ресурс
+            /*Передаем общий ресурс*/
             JobDataMap data = new JobDataMap();
             data.put("store", cn);
-            // Создаем задачу
+            /*Создаем задачу*/
             JobDetail job = newJob(Rabbit.class)
                     .usingJobData(data)
                     .build();
-            //Создание расписания
+            /*Создание расписания*/
             SimpleScheduleBuilder times = simpleSchedule()
                     .withIntervalInSeconds(10)
                     .repeatForever();
-            //Запуск задачи
+            /*Запуск задачи*/
             Trigger trigger = newTrigger()
                     .startNow()
                     .withSchedule(times)
                     .build();
-            //Выполнение задачи
+            /*Выполнение задачи*/
             scheduler.scheduleJob(job, trigger);
             Thread.sleep(10000);
-            //выключить планировщик
+            /*выключить планировщик*/
             scheduler.shutdown();
             System.out.println(cn);
         } catch (Exception se) {
@@ -63,9 +63,9 @@ public class AlertRabbit {
         @Override
         public void execute(JobExecutionContext context) {
             System.out.println("Rabbit runs here ...");
-            // List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");
+            /* List<Long> store = (List<Long>) context.getJobDetail().getJobDataMap().get("store");*/
             Connection cn = (Connection) context.getJobDetail().getJobDataMap().get("store");
-            //cn.add(System.currentTimeMillis());
+            /*cn.add(System.currentTimeMillis());*/
             try (PreparedStatement ps = cn.prepareStatement("insert into rabbit(created_data) values(?)")) {
                 ps.setString(1, String.valueOf(System.currentTimeMillis()));
                 ps.execute();

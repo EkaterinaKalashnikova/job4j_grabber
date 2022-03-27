@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlRuParse implements Parse {
-   // private static final Logger LOG =  LoggerFactory.getLogger(SqlRuParse.class.getName());
-  //  private String url;
-// private SqlRuParse(String url) {
-      //  this.url = url;
-  //  }
+   /* private static final Logger LOG =  LoggerFactory.getLogger(SqlRuParse.class.getName());
+   private String url;
+   private SqlRuParse(String url) {
+        this.url = url;
+   }*/
 
     public SqlRuParse() {
 
@@ -41,15 +41,15 @@ public class SqlRuParse implements Parse {
             Elements row = doc.select(".postslisttopic");
             for (Element td : row) {
                 Element href = td.child(0);
-                // System.out.println(href.text());
-                // String name = href.text();
+                /*System.out.println(href.text());
+                 String name = href.text();*/
                 String linkName = href.attr("href");
                 Post post = detail(linkName);
-                //post.setName(name);
+                /*post.setName(name);*/
                 post.setLink(linkName);
                 listPost.add(post);
             }
-            return listPost; //список из вакансий , делает вызов detail
+            return listPost; /*список из вакансий , делает вызов detail*/
         }
 
         @Override
@@ -63,7 +63,7 @@ public class SqlRuParse implements Parse {
             SqlRuDateTimeParser stm = new SqlRuDateTimeParser();
             LocalDateTime createDate = stm.parse(data[3]);
             post.setCreateData(createDate);
-            return post; //объект пост
+            return post; /*объект пост*/
         }
     }
 

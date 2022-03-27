@@ -11,22 +11,22 @@ import java.io.IOException;
 
 public class PostParser {
     public String[] loadAdDetails(String url) throws IOException {
-        //String url = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";
+        /*String url = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";*/
         Document document = Jsoup.connect(url).get();
         Element el = document.getElementsByAttributeValue("class", "messageHeader").get(0);
         String name = el.ownText();
-        //System.out.println(name);
+        /*System.out.println(name);*/
         Element element = document.getElementsByAttributeValue("class", "msgFooter").first();
         String s = element.ownText().substring(0, element.ownText().indexOf("["));
-       // System.out.println(s);
+       /*System.out.println(s);*/
         String[] str = new String[4];
         Elements element1 = document.select(".msgBody");
         Element element2 = element1.get(0).child(0);
-       // System.out.println(element2);
+       /*System.out.println(element2);*/
         String link = element2.attr("href");
         Element element3 = element1.get(1);
         String text = element3.text();
-        //System.out.println(text);
+        /*System.out.println(text);*/
         str[0] = name;
         str[1] = link;
         str[2] = text;

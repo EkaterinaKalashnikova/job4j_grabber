@@ -27,7 +27,7 @@ public class Grabber implements Grab {
 
     private Store store() {
         return new PsqlStore(cfg);
-       // return null;
+       /*return null;*/
     }
 
     private Scheduler scheduler() throws SchedulerException {
@@ -37,7 +37,7 @@ public class Grabber implements Grab {
     }
 
     private void cfg() throws IOException {
-        //  try (InputStream in = new FileInputStream(new File("app.properties"))) {
+        /*try (InputStream in = new FileInputStream(new File("app.properties"))) {*/
         try (InputStream in = Grabber.class.getClassLoader().getResourceAsStream("app.properties")) {
             cfg.load(in);
         }
@@ -85,11 +85,11 @@ public class Grabber implements Grab {
     }
 
     public static class GrabJob implements Job {
-       // private Timestamp timestamp;
+       /* private Timestamp timestamp;
 
-       // public GrabJob(Timestamp timestamp) {
-       //     this.timestamp = timestamp;
-       // }
+        public GrabJob(Timestamp timestamp) {
+            this.timestamp = timestamp;
+        }*/
 
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -97,11 +97,11 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             /* TODO impl logic */
-            //Создаем список для вставки обновлений
+           /* Создаем список для вставки обновлений*/
             try {
                 List<Post> posts = parse.list("https://www.sql.ru/forum/job-offers");
-                //все полученные ссылки добавляем в спиок
-                //и сохраняем поочереди
+                /*все полученные ссылки добавляем в спиок
+                и сохраняем поочереди*/
                 for (Post post : posts) {
                     store.save(post);
                 }

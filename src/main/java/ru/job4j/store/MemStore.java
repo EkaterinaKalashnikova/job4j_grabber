@@ -33,7 +33,7 @@ public class MemStore implements Store, AutoCloseable {
             statement.setString(1, posts.getName());
             statement.setString(2, posts.getLink());
             statement.setString(3, posts.getText());
-            //statement.setString(4, posts.getCreateData().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));
+            /*statement.setString(4, posts.getCreateData().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)));*/
             statement.setTimestamp(4, Timestamp.valueOf(posts.getCreateData()));
             statement.execute();
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
